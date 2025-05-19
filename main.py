@@ -15,7 +15,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 📷 이미지 (최신 버전 반영)
-st.image("https://i.imgur.com/JWtF1A5.png", use_container_width=True)
+# st.image("https://i.imgur.com/JWtF1A5.png", use_container_width=True)
 
 # 🎯 MBTI 목록 및 추천 직업
 mbti_jobs = {
