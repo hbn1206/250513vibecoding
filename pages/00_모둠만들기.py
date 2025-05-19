@@ -61,8 +61,16 @@ def assign_groups(student_data):
             if j != i and j not in assigned and len(group) < 5:
                 group.append(j)
                 assigned.add(j)
-        groups.append([names[k] for k in group])
+        groups.append(group)
     return groups
+
+# 주제 통합 요약 함수
+def summarize_topics(topics):
+    if not topics:
+        return "(요약 없음)"
+    keywords = [word for t in topics for word in t.split() if len(word) > 1]
+    freq = pd.Series(keywords).value_counts().head(3).index.tolist()
+    return " / ".join(freq) + " 관련 주제"
 
 # 제출 처리
 if st.button("✨ 입력하고 팀 구성 보기!"):
@@ -91,12 +99,21 @@ if st.button("✨ 입력하고 팀 구성 보기!"):
         groups = assign_groups(st.session_state.student_data)
         st.markdown("---")
         st.subheader("👥 현재까지의 모둠 구성")
-        for idx, group in enumerate(groups, 1):
-            emojis = ["🦄", "🐳", "🦋", "🐉", "🌈", "🍀", "💐", "🪐"]
-            st.markdown(f"### 🌟 모둠 {idx}: {' '.join(random.choices(emojis, k=3))}")
-            for member in group:
-                st.markdown(f"- {member}")
 
+        # 모둠표 만들기
+        group_dict = {}
+        for idx, group in enumerate(groups, 1):
+            group_name = f"모둠 {idx}"
+            summary = summarize_topics([st.session_state.student_data[i]['interest'] for i in group])
+            group_dict[group_name + f" ({summary})"] = [f"{st.session_state.student_data[i]['name']} - {st.session_state.student_data[i]['interest']}" for i in group]
+
+        max_len = max(len(members) for members in group_dict.values())
+        for key in group_dict:
+            while len(group_dict[key]) < max_len:
+                group_dict[key].append("")
+
+        df = pd.DataFrame(group_dict)
+        st.dataframe(df)
         st.snow()
     else:
         st.error("⚠️ 이름과 관심 주제를 모두 입력해주세요!")
