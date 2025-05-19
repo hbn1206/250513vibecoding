@@ -44,7 +44,7 @@ topic_recommendations = {
     "연금제도 비교": ["세계 각국의 연금제도 비교", "한국 연금제도의 특성과 문제점"]
 }
 
-# 유사도 기반 클러스터링 함수 (cosine similarity와 거리 행렬 사용)
+# 유사도 기반 클러스터링 함수 (cosine similarity와 거리 행렬 사용, 최대 6개 제한)
 def assign_groups(student_data):
     if len(student_data) <= 1:
         return [[i] for i in range(len(student_data))]
@@ -54,8 +54,9 @@ def assign_groups(student_data):
     sim_matrix = cosine_similarity(tfidf)
     dist_matrix = 1 - sim_matrix
 
-    # 최소 거리 기준 클러스터링
-    clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=0.6, linkage='average', metric='precomputed')
+    # 최대 6개 클러스터로 제한
+    max_clusters = min(6, len(student_data))
+    clustering = AgglomerativeClustering(n_clusters=max_clusters, linkage='average', metric='precomputed')
     labels = clustering.fit_predict(dist_matrix)
 
     groups = defaultdict(list)
