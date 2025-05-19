@@ -1,3 +1,6 @@
 plotly
 folium
 koreanize_matplotlib
+streamlit
+pandas
+scikit-learn
