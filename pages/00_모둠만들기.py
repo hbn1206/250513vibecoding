@@ -7,7 +7,18 @@ import random
 
 # Initialize session state for student data
 if 'student_data' not in st.session_state:
-    st.session_state.student_data = []
+    st.session_state.student_data = [
+        {"name": "지민", "interest": "국민연금의 구조"},
+        {"name": "서연", "interest": "연금 수령 시기와 총액 비교"},
+        {"name": "현우", "interest": "연금 투자 포트폴리오"},
+        {"name": "하늘", "interest": "세금과 연금 수령 시 이점"},
+        {"name": "민준", "interest": "국민연금의 지속 가능성"},
+        {"name": "수빈", "interest": "국민연금 개혁 방안"},
+        {"name": "윤서", "interest": "연금 수령 시기 전략"},
+        {"name": "도윤", "interest": "연금 투자 수익률 분석"},
+        {"name": "채원", "interest": "세계 연금제도 비교"},
+        {"name": "정우", "interest": "연금 소득 과세 방식"}
+    ]
 
 # 제목
 st.title("💸✨ 연금기반 경제수학 수업 🌟 모둠 구성기 🎓🧠")
@@ -32,7 +43,7 @@ topic_recommendations = {
 def assign_groups(student_data):
     names = [x['name'] for x in student_data]
     keywords = [x['interest'] for x in student_data]
-    
+
     tfidf = TfidfVectorizer().fit_transform(keywords)
     sim_matrix = cosine_similarity(tfidf)
 
