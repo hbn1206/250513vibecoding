@@ -40,7 +40,7 @@ topic_recommendations = {
     "연금제도 비교": ["세계 각국의 연금제도 비교", "한국 연금제도의 특성과 문제점"]
 }
 
-# 유사도 기반 클러스터링 함수
+# 유사도 기반 클러스터링 함수 (거리 행렬 없이 cosine similarity로 그룹 분할)
 def assign_groups(student_data):
     if len(student_data) <= 1:
         return [[i] for i in range(len(student_data))]
@@ -48,11 +48,11 @@ def assign_groups(student_data):
     keywords = [x['interest'] for x in student_data]
     tfidf = TfidfVectorizer().fit_transform(keywords)
     sim_matrix = cosine_similarity(tfidf)
-    dist_matrix = 1 - sim_matrix
 
-    # 유사도 기반 계층적 클러스터링으로 그룹 형성
-    clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=0.6, affinity='precomputed', linkage='average')
-    labels = clustering.fit_predict(dist_matrix)
+    # 클러스터링 수 추정: 2~5개 사이로 그룹 설정
+    n_clusters = max(2, min(5, len(student_data)//2))
+    clustering = AgglomerativeClustering(n_clusters=n_clusters, affinity='euclidean', linkage='ward')
+    labels = clustering.fit_predict(tfidf.toarray())
 
     groups = defaultdict(list)
     for idx, label in enumerate(labels):
