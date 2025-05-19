@@ -56,9 +56,17 @@ def assign_groups(student_data):
 # 제출 처리
 if st.button("✨ 입력하고 팀 구성 보기!"):
     if name and interest:
-        st.session_state.student_data.append({"name": name, "interest": interest})
-        st.success("✅ 입력 완료! 멋진 팀 구성을 준비 중이에요...")
-        st.balloons()
+        updated = False
+        for student in st.session_state.student_data:
+            if student['name'] == name:
+                student['interest'] = interest
+                updated = True
+                st.info(f"🔁 '{name}'님의 관심 주제가 업데이트되었어요!")
+                break
+        if not updated:
+            st.session_state.student_data.append({"name": name, "interest": interest})
+            st.success("✅ 입력 완료! 멋진 팀 구성을 준비 중이에요...")
+            st.balloons()
 
         # 발표 주제 추천
         st.markdown("---")
@@ -78,7 +86,6 @@ if st.button("✨ 입력하고 팀 구성 보기!"):
             for member in group:
                 st.markdown(f"- {member}")
 
-        # 눈 내리는 효과
         st.snow()
     else:
         st.error("⚠️ 이름과 관심 주제를 모두 입력해주세요!")
