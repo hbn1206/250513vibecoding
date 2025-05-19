@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.cluster import AgglomerativeClustering
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 
@@ -39,30 +40,25 @@ topic_recommendations = {
     "연금제도 비교": ["세계 각국의 연금제도 비교", "한국 연금제도의 특성과 문제점"]
 }
 
-# 유사도 분석 함수
+# 유사도 기반 클러스터링 함수
 def assign_groups(student_data):
-    names = [x['name'] for x in student_data]
-    keywords = [x['interest'] for x in student_data]
+    if len(student_data) <= 1:
+        return [[i] for i in range(len(student_data))]
 
+    keywords = [x['interest'] for x in student_data]
     tfidf = TfidfVectorizer().fit_transform(keywords)
     sim_matrix = cosine_similarity(tfidf)
+    dist_matrix = 1 - sim_matrix
 
-    assigned = set()
-    groups = []
+    # 유사도 기반 계층적 클러스터링으로 그룹 형성
+    clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=0.6, affinity='precomputed', linkage='average')
+    labels = clustering.fit_predict(dist_matrix)
 
-    for i in range(len(names)):
-        if i in assigned:
-            continue
-        group = [i]
-        assigned.add(i)
-        sims = list(enumerate(sim_matrix[i]))
-        sims = sorted(sims, key=lambda x: x[1], reverse=True)
-        for j, score in sims:
-            if j != i and j not in assigned and len(group) < 5:
-                group.append(j)
-                assigned.add(j)
-        groups.append(group)
-    return groups
+    groups = defaultdict(list)
+    for idx, label in enumerate(labels):
+        groups[label].append(idx)
+
+    return list(groups.values())
 
 # 주제 통합 요약 함수
 def summarize_topics(topics):
