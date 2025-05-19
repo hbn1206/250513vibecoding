@@ -14,8 +14,8 @@ st.markdown("""
     <p style='text-align: center; font-size: 24px;'>당신의 성격 유형에 맞는 멋진 직업을 지금 바로 찾아보세요! 🧑‍🚀👩‍⚕️👨‍🏫👩‍💻</p>
 """, unsafe_allow_html=True)
 
-# 📷 이미지
-st.image("https://i.imgur.com/JWtF1A5.png", use_column_width=True)
+# 📷 이미지 (최신 버전 반영)
+st.image("https://i.imgur.com/JWtF1A5.png", use_container_width=True)
 
 # 🎯 MBTI 목록 및 추천 직업
 mbti_jobs = {
@@ -25,7 +25,6 @@ mbti_jobs = {
     "ESTJ": ["경영 관리자 🏢", "군인 🎖️", "판사 ⚖️"],
     "ISFJ": ["간호사 💉", "초등교사 👩‍🏫", "사서 📚"],
     "ENTP": ["벤처 CEO 💼", "투자자 💰", "크리에이터 📺"],
-    # 필요 시 더 추가 가능
 }
 
 # 🌟 사용자 입력
